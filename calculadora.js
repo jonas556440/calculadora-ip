@@ -1,8 +1,3 @@
-document.addEventListener("DOMContentLoaded", function () {
-    var calcularButton = document.getElementById("calcularButton");
-    calcularButton.addEventListener("click", calcular);
-});
-
 function calcular() {
     var ip = document.getElementById("ip").value;
     var mascaraInput = document.getElementById("mascara").value;
@@ -10,15 +5,16 @@ function calcular() {
 
     // Lógica de cálculo dos resultados
     var enderecoRede = calcularEnderecoRede(ip, mascara);
+    var enderecoBroadcast = calcularEnderecoBroadcast(ip, mascara);
     var qtdRede = calcularQuantidadeRede(mascara);
     var qtdHost = calcularQuantidadeHost(mascara);
     var classeIP = determinarClasseIP(ip);
 
     // Atualizar os resultados
     document.getElementById("enderecoRede").textContent = enderecoRede;
-    document.getElementById("enderecoBroadcast").textContent = calcularEnderecoBroadcast(enderecoRede, qtdHost);
-    document.getElementById("qtdRede").textContent = qtdRede;
-    document.getElementById("qtdHost").textContent = qtdHost;
+    document.getElementById("enderecoBroadcast").textContent = enderecoBroadcast;
+    document.getElementById("qtdRede").textContent = qtdRede.toString();
+    document.getElementById("qtdHost").textContent = qtdHost.toString();
     document.getElementById("classeIP").textContent = classeIP;
 }
 
@@ -34,10 +30,16 @@ function calcularEnderecoRede(ip, mascara) {
     return enderecoRedeArray.join(".");
 }
 
-function calcularEnderecoBroadcast(enderecoRede, qtdHost) {
-    var enderecoArray = enderecoRede.split(".");
-    enderecoArray[3] = parseInt(enderecoArray[3]) + qtdHost - 1;
-    return enderecoArray.join(".");
+function calcularEnderecoBroadcast(ip, mascara) {
+    var ipArray = ip.split(".");
+    var mascaraArray = mascara.split(".");
+    var enderecoBroadcastArray = [];
+
+    for (var i = 0; i < 4; i++) {
+        enderecoBroadcastArray.push(ipArray[i] | ~mascaraArray[i]);
+    }
+
+    return enderecoBroadcastArray.join(".");
 }
 
 function calcularQuantidadeRede(mascara) {
@@ -57,13 +59,11 @@ function calcularQuantidadeHost(mascara) {
 
 function cidrToMascara(cidr) {
     var prefix = parseInt(cidr.split("/")[1]);
-    var mascaraArray = [0, 0, 0, 0];
-
-    for (var i = 0; i < prefix; i++) {
-        mascaraArray[Math.floor(i / 8)] += 1 << (7 - (i % 8));
+    var mascara = [];
+    for (var i = 0; i < 4; i++) {
+        mascara.push((prefix > 8 * i) ? 255 : 256 - Math.pow(2, 8 - (prefix - 8 * i)));
     }
-
-    return mascaraArray.join(".");
+    return mascara.join(".");
 }
 
 function determinarClasseIP(ip) {

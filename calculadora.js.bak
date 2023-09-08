@@ -10,14 +10,13 @@ function calcular() {
 
     // Lógica de cálculo dos resultados
     var enderecoRede = calcularEnderecoRede(ip, mascara);
-    var enderecoBroadcast = calcularEnderecoBroadcast(ip, mascara);
     var qtdRede = calcularQuantidadeRede(mascara);
     var qtdHost = calcularQuantidadeHost(mascara);
     var classeIP = determinarClasseIP(ip);
 
     // Atualizar os resultados
     document.getElementById("enderecoRede").textContent = enderecoRede;
-    document.getElementById("enderecoBroadcast").textContent = enderecoBroadcast;
+    document.getElementById("enderecoBroadcast").textContent = calcularEnderecoBroadcast(enderecoRede, qtdHost);
     document.getElementById("qtdRede").textContent = qtdRede;
     document.getElementById("qtdHost").textContent = qtdHost;
     document.getElementById("classeIP").textContent = classeIP;
@@ -35,16 +34,10 @@ function calcularEnderecoRede(ip, mascara) {
     return enderecoRedeArray.join(".");
 }
 
-function calcularEnderecoBroadcast(ip, mascara) {
-    var ipArray = ip.split(".");
-    var mascaraArray = mascara.split(".");
-    var enderecoBroadcastArray = [];
-
-    for (var i = 0; i < 4; i++) {
-        enderecoBroadcastArray.push(ipArray[i] | ~mascaraArray[i]);
-    }
-
-    return enderecoBroadcastArray.join(".");
+function calcularEnderecoBroadcast(enderecoRede, qtdHost) {
+    var enderecoArray = enderecoRede.split(".");
+    enderecoArray[3] = parseInt(enderecoArray[3]) + qtdHost - 1;
+    return enderecoArray.join(".");
 }
 
 function calcularQuantidadeRede(mascara) {
