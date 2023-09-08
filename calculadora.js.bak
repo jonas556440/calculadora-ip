@@ -64,11 +64,13 @@ function calcularQuantidadeHost(mascara) {
 
 function cidrToMascara(cidr) {
     var prefix = parseInt(cidr.split("/")[1]);
-    var mascara = [];
-    for (var i = 0; i < 4; i++) {
-        mascara.push((prefix > 8 * i) ? 255 : 256 - Math.pow(2, 8 - (prefix - 8 * i)));
+    var mascaraArray = [0, 0, 0, 0];
+
+    for (var i = 0; i < prefix; i++) {
+        mascaraArray[Math.floor(i / 8)] += 1 << (7 - (i % 8));
     }
-    return mascara.join(".");
+
+    return mascaraArray.join(".");
 }
 
 function determinarClasseIP(ip) {
