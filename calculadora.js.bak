@@ -1,39 +1,41 @@
-document.addEventListener("DOMContentLoaded", function () {
-    const calcularBtn = document.getElementById("calcular");
-    calcularBtn.addEventListener("click", calcularSubrede);
+function calcular() {
+    var classe = document.getElementById("classe").value;
+    var ip = document.getElementById("ip").value;
+    var mascara = document.getElementById("mascara").value;
 
-    function calcularSubrede() {
-        const ipInput = document.getElementById("ip");
-        const mascaraSelect = document.getElementById("mascara");
-        const enderecoRedeSpan = document.getElementById("endereco-rede");
-        const enderecoBroadcastSpan = document.getElementById("endereco-broadcast");
-        const qtdHostsSpan = document.getElementById("qtd-hosts");
+    // Lógica para calcular os resultados
+    var enderecoRede = calcularEnderecoRede(ip, mascara);
+    var enderecoBroadcast = calcularEnderecoBroadcast(ip, mascara);
+    var qtdRede = calcularQuantidadeRede(mascara);
+    var qtdHost = calcularQuantidadeHost(mascara);
 
-        const ip = ipInput.value;
-        const mascara = mascaraSelect.value;
+    // Atualizar os resultados na página
+    document.getElementById("enderecoRede").textContent = enderecoRede;
+    document.getElementById("enderecoBroadcast").textContent = enderecoBroadcast;
+    document.getElementById("qtdRede").textContent = qtdRede;
+    document.getElementById("qtdHost").textContent = qtdHost;
+}
 
-        // Realize os cálculos de sub-rede aqui
-        const { enderecoRede, enderecoBroadcast, qtdHosts } = calcularSubredeCompleta(ip, mascara);
+function calcularEnderecoRede(ip, mascara) {
+    // Implemente a lógica para calcular o endereço de rede aqui
+    // Retorne o resultado como uma string
+    return "192.168.0.0"; // Exemplo
+}
 
-        enderecoRedeSpan.textContent = enderecoRede;
-        enderecoBroadcastSpan.textContent = enderecoBroadcast;
-        qtdHostsSpan.textContent = qtdHosts;
-    }
+function calcularEnderecoBroadcast(ip, mascara) {
+    // Implemente a lógica para calcular o endereço de broadcast aqui
+    // Retorne o resultado como uma string
+    return "192.168.0.255"; // Exemplo
+}
 
-    function calcularSubredeCompleta(ip, mascara) {
-        // Implemente a lógica para calcular endereço de rede, endereço de broadcast e quantidade de hosts aqui
-        const ipParts = ip.split('.');
-        const mascaraParts = mascara.split('.');
+function calcularQuantidadeRede(mascara) {
+    // Implemente a lógica para calcular a quantidade de rede/sub-rede aqui
+    // Retorne o resultado como uma string
+    return "256"; // Exemplo
+}
 
-        const enderecoRede = ipParts.map((part, index) => (part & mascaraParts[index]).toString()).join('.');
-        const enderecoBroadcast = ipParts.map((part, index) => ((part | ~mascaraParts[index]) & 255).toString()).join('.');
-
-        const qtdHosts = Math.pow(2, 32 - mascaraToCIDR(mascara)) - 2;
-
-        return { enderecoRede, enderecoBroadcast, qtdHosts };
-    }
-
-    function mascaraToCIDR(mascara) {
-        return mascara.split('.').map(part => (part >>> 0).toString(2)).join('').split('1').length - 1;
-    }
-});
+function calcularQuantidadeHost(mascara) {
+    // Implemente a lógica para calcular a quantidade de host por rede/sub-rede aqui
+    // Retorne o resultado como uma string
+    return "254"; // Exemplo
+}

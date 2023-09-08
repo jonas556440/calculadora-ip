@@ -1,41 +1,90 @@
-function calcular() {
-    var classe = document.getElementById("classe").value;
-    var ip = document.getElementById("ip").value;
-    var mascara = document.getElementById("mascara").value;
+document.addEventListener("DOMContentLoaded", function () {
+    var calcularButton = document.getElementById("calcularButton");
+    calcularButton.addEventListener("click", calcular);
+});
 
-    // Lógica para calcular os resultados
+function calcular() {
+    var ip = document.getElementById("ip").value;
+    var mascaraInput = document.getElementById("mascara").value;
+    var mascara = mascaraInput.includes("/") ? cidrToMascara(mascaraInput) : mascaraInput;
+
+    // Lógica de cálculo dos resultados
     var enderecoRede = calcularEnderecoRede(ip, mascara);
     var enderecoBroadcast = calcularEnderecoBroadcast(ip, mascara);
     var qtdRede = calcularQuantidadeRede(mascara);
     var qtdHost = calcularQuantidadeHost(mascara);
+    var classeIP = determinarClasseIP(ip);
 
-    // Atualizar os resultados na página
+    // Atualizar os resultados
     document.getElementById("enderecoRede").textContent = enderecoRede;
     document.getElementById("enderecoBroadcast").textContent = enderecoBroadcast;
     document.getElementById("qtdRede").textContent = qtdRede;
     document.getElementById("qtdHost").textContent = qtdHost;
+    document.getElementById("classeIP").textContent = classeIP;
 }
 
 function calcularEnderecoRede(ip, mascara) {
-    // Implemente a lógica para calcular o endereço de rede aqui
-    // Retorne o resultado como uma string
-    return "192.168.0.0"; // Exemplo
+    var ipArray = ip.split(".");
+    var mascaraArray = mascara.split(".");
+    var enderecoRedeArray = [];
+
+    for (var i = 0; i < 4; i++) {
+        enderecoRedeArray.push(ipArray[i] & mascaraArray[i]);
+    }
+
+    return enderecoRedeArray.join(".");
 }
 
 function calcularEnderecoBroadcast(ip, mascara) {
-    // Implemente a lógica para calcular o endereço de broadcast aqui
-    // Retorne o resultado como uma string
-    return "192.168.0.255"; // Exemplo
+    var ipArray = ip.split(".");
+    var mascaraArray = mascara.split(".");
+    var enderecoBroadcastArray = [];
+
+    for (var i = 0; i < 4; i++) {
+        enderecoBroadcastArray.push(ipArray[i] | ~mascaraArray[i]);
+    }
+
+    return enderecoBroadcastArray.join(".");
 }
 
 function calcularQuantidadeRede(mascara) {
-    // Implemente a lógica para calcular a quantidade de rede/sub-rede aqui
-    // Retorne o resultado como uma string
-    return "256"; // Exemplo
+    var mascaraArray = mascara.split(".");
+    var qtdRede = 1;
+
+    for (var i = 0; i < 4; i++) {
+        qtdRede *= 256 - parseInt(mascaraArray[i]);
+    }
+
+    return qtdRede;
 }
 
 function calcularQuantidadeHost(mascara) {
-    // Implemente a lógica para calcular a quantidade de host por rede/sub-rede aqui
-    // Retorne o resultado como uma string
-    return "254"; // Exemplo
+    return calcularQuantidadeRede(mascara) - 2;
+}
+
+function cidrToMascara(cidr) {
+    var prefix = parseInt(cidr.split("/")[1]);
+    var mascara = [];
+    for (var i = 0; i < 4; i++) {
+        mascara.push((prefix > 8 * i) ? 255 : 256 - Math.pow(2, 8 - (prefix - 8 * i)));
+    }
+    return mascara.join(".");
+}
+
+function determinarClasseIP(ip) {
+    var primeiroOcteto = parseInt(ip.split(".")[0]);
+
+    if (primeiroOcteto >= 1 && primeiroOcteto <= 126) {
+        return "Classe A";
+    } else if (primeiroOcteto >= 128 && primeiroOcteto <= 191) {
+        return "Classe B";
+    } else if (primeiroOcteto >= 192 && primeiroOcteto <= 223) {
+        return "Classe C";
+    } else if (primeiroOcteto >= 224 && primeiroOcteto <= 239) {
+        return "Classe D (Multicast)";
+    } else if (primeiroOcteto >= 240 && primeiroOcteto <= 255) {
+        return "Classe E (Reservado)";
+    } else {
+        return "Inválido";
+    }
 }
