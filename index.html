@@ -3,31 +3,98 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculadora de Sub-redes</title>
-    <link rel="stylesheet" href="style.css">
+    <title>Calculadora de Redes IP</title>
+    <style>
+        body {
+            background-image: url('sua-imagem-de-fundo.jpg'); /* Substitua pelo caminho da sua imagem de fundo */
+            background-size: cover;
+            background-repeat: no-repeat;
+            background-attachment: fixed;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+        }
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+        }
+        h1 {
+            text-align: center;
+        }
+        label {
+            display: block;
+            margin-top: 10px;
+        }
+        input[type="text"], select {
+            width: 100%;
+            padding: 10px;
+            margin-top: 5px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            display: block;
+            margin-top: 10px;
+            padding: 10px 20px;
+            background-color: #0074D9;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .result {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border-radius: 5px;
+        }
+    </style>
 </head>
 <body>
-    <h1>Calculadora de Sub-redes</h1>
-    <div class="calculator">
-        <label for="ip">Endereço IP:</label>
-        <input type="text" id="ip" placeholder="Exemplo: 192.168.1.1">
-        
-        <label for="mascara">Máscara de Sub-rede:</label>
-        <select id="mascara">
-            <option value="255.255.255.0">255.255.255.0 /24</option>
-            <option value="255.255.255.128">255.255.255.128 /25</option>
-            <option value="255.255.255.192">255.255.255.192 /26</option>
-            <!-- Adicione outras máscaras aqui -->
-        </select>
-
-        <button id="calcular">Calcular</button>
-
-        <h2>Resultados:</h2>
-        <p>Endereço de Rede: <span id="endereco-rede"></span></p>
-        <p>Endereço de Broadcast: <span id="endereco-broadcast"></span></p>
-        <p>Quantidade de Hosts: <span id="qtd-hosts"></span></p>
+    <div class="container">
+        <h1>Calculadora de Redes IP</h1>
+        <form id="ipCalculator">
+            <label for="classe">Classe</label>
+            <select id="classe">
+                <option value="A">A</option>
+                <option value="B">B</option>
+                <option value="C">C</option>
+            </select>
+            <label for="ip">IP</label>
+            <input type="text" id="ip" placeholder="Ex: 192.168.0.1">
+            <label for="mascara">Máscara</label>
+            <input type="text" id="mascara" placeholder="Ex: 255.255.255.0">
+            <button type="button" onclick="calcular()">Calcular</button>
+        </form>
+        <div class="result" id="resultado">
+            <h2>Resultados</h2>
+            <p>Endereço de Rede: <span id="enderecoRede"></span></p>
+            <p>Endereço de Broadcast: <span id="enderecoBroadcast"></span></p>
+            <p>Quantidade de rede/sub-rede: <span id="qtdRede"></span></p>
+            <p>Quantidade de host por rede/sub-rede: <span id="qtdHost"></span></p>
+        </div>
     </div>
 
-    <script src="calculadora.js"></script>
+    <script>
+        function calcular() {
+            var classe = document.getElementById("classe").value;
+            var ip = document.getElementById("ip").value;
+            var mascara = document.getElementById("mascara").value;
+
+            // Coloque aqui a lógica de cálculo dos resultados
+
+            // Exemplo de como atualizar os resultados:
+            document.getElementById("enderecoRede").textContent = "192.168.0.0";
+            document.getElementById("enderecoBroadcast").textContent = "192.168.0.255";
+            document.getElementById("qtdRede").textContent = "256";
+            document.getElementById("qtdHost").textContent = "254";
+        }
+    </script>
 </body>
 </html>

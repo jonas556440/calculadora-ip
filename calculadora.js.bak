@@ -13,27 +13,27 @@ document.addEventListener("DOMContentLoaded", function () {
         const mascara = mascaraSelect.value;
 
         // Realize os cálculos de sub-rede aqui
-        // Exemplo simples: apenas mostre os valores de IP, máscara, endereço de rede, endereço de broadcast e quantidade de hosts
-        enderecoRedeSpan.textContent = calcularEnderecoRede(ip, mascara);
-        enderecoBroadcastSpan.textContent = calcularEnderecoBroadcast(ip, mascara);
-        qtdHostsSpan.textContent = calcularQuantidadeHosts(mascara);
+        const { enderecoRede, enderecoBroadcast, qtdHosts } = calcularSubredeCompleta(ip, mascara);
+
+        enderecoRedeSpan.textContent = enderecoRede;
+        enderecoBroadcastSpan.textContent = enderecoBroadcast;
+        qtdHostsSpan.textContent = qtdHosts;
     }
 
-    function calcularEnderecoRede(ip, mascara) {
-        // Implemente a lógica para calcular o endereço de rede aqui
-        // Este é apenas um exemplo simples
-        return "Endereço de Rede Calculado";
+    function calcularSubredeCompleta(ip, mascara) {
+        // Implemente a lógica para calcular endereço de rede, endereço de broadcast e quantidade de hosts aqui
+        const ipParts = ip.split('.');
+        const mascaraParts = mascara.split('.');
+
+        const enderecoRede = ipParts.map((part, index) => (part & mascaraParts[index]).toString()).join('.');
+        const enderecoBroadcast = ipParts.map((part, index) => ((part | ~mascaraParts[index]) & 255).toString()).join('.');
+
+        const qtdHosts = Math.pow(2, 32 - mascaraToCIDR(mascara)) - 2;
+
+        return { enderecoRede, enderecoBroadcast, qtdHosts };
     }
 
-    function calcularEnderecoBroadcast(ip, mascara) {
-        // Implemente a lógica para calcular o endereço de broadcast aqui
-        // Este é apenas um exemplo simples
-        return "Endereço de Broadcast Calculado";
-    }
-
-    function calcularQuantidadeHosts(mascara) {
-        // Implemente a lógica para calcular a quantidade de hosts aqui
-        // Este é apenas um exemplo simples
-        return "Quantidade de Hosts Calculada";
+    function mascaraToCIDR(mascara) {
+        return mascara.split('.').map(part => (part >>> 0).toString(2)).join('').split('1').length - 1;
     }
 });
