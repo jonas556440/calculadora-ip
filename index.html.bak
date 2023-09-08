@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculadora de Sub-redes</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Calculadora de Sub-redes</h1>
+    <div class="calculator">
+        <label for="ip">Endereço IP:</label>
+        <input type="text" id="ip" placeholder="Exemplo: 192.168.1.1">
+        
+        <label for="mascara">Máscara de Sub-rede:</label>
+        <select id="mascara">
+            <option value="255.255.255.0">255.255.255.0 /24</option>
+            <option value="255.255.255.128">255.255.255.128 /25</option>
+            <option value="255.255.255.192">255.255.255.192 /26</option>
+            <!-- Adicione outras máscaras aqui -->
+        </select>
+
+        <button id="calcular">Calcular</button>
+
+        <h2>Resultados:</h2>
+        <p>Endereço de Rede: <span id="endereco-rede"></span></p>
+        <p>Endereço de Broadcast: <span id="endereco-broadcast"></span></p>
+        <p>Quantidade de Hosts: <span id="qtd-hosts"></span></p>
+    </div>
+
+    <script src="calculadora.js"></script>
+</body>
+</html>
