@@ -4,57 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Calculadora de Redes IP</title>
-    <style>
-        body {
-            background-image: url('sua-imagem-de-fundo.jpg'); /* Substitua pelo caminho da sua imagem de fundo */
-            background-size: cover;
-            background-repeat: no-repeat;
-            background-attachment: fixed;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-        .container {
-            max-width: 800px;
-            margin: 0 auto;
-            padding: 20px;
-            background-color: rgba(255, 255, 255, 0.8);
-            border-radius: 10px;
-        }
-        h1 {
-            text-align: center;
-        }
-        label {
-            display: block;
-            margin-top: 10px;
-        }
-        input[type="text"] {
-            width: 100%;
-            padding: 10px;
-            margin-top: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-        }
-        button {
-            display: block;
-            margin-top: 10px;
-            padding: 10px 20px;
-            background-color: #0074D9;
-            color: #fff;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        button:hover {
-            background-color: #0056b3;
-        }
-        .result {
-            margin-top: 20px;
-            padding: 10px;
-            background-color: rgba(0, 0, 0, 0.1);
-            border-radius: 5px;
-        }
-    </style>
+    <link rel="stylesheet" type="text/css" href="styles.css">
 </head>
 <body>
     <div class="container">
@@ -64,7 +14,7 @@
             <input type="text" id="ip" placeholder="Ex: 192.168.0.1">
             <label for="mascara">Máscara (CIDR ou Notação Decimal)</label>
             <input type="text" id="mascara" placeholder="Ex: 24 ou 255.255.255.0">
-            <button type="button" onclick="calcular()">Calcular</button>
+            <button type="button" id="calcularButton">Calcular</button>
         </form>
         <div class="result" id="resultado">
             <h2>Resultados</h2>
@@ -75,93 +25,6 @@
             <p>Classe do IP: <span id="classeIP"></span></p>
         </div>
     </div>
-
-    <script>
-        function calcular() {
-            var ip = document.getElementById("ip").value;
-            var mascaraInput = document.getElementById("mascara").value;
-            var mascara = mascaraInput.includes("/") ? cidrToMascara(mascaraInput) : mascaraInput;
-
-            // Lógica de cálculo dos resultados
-            var enderecoRede = calcularEnderecoRede(ip, mascara);
-            var enderecoBroadcast = calcularEnderecoBroadcast(ip, mascara);
-            var qtdRede = calcularQuantidadeRede(mascara);
-            var qtdHost = calcularQuantidadeHost(mascara);
-            var classeIP = determinarClasseIP(ip);
-
-            // Atualizar os resultados
-            document.getElementById("enderecoRede").textContent = enderecoRede;
-            document.getElementById("enderecoBroadcast").textContent = enderecoBroadcast;
-            document.getElementById("qtdRede").textContent = qtdRede;
-            document.getElementById("qtdHost").textContent = qtdHost;
-            document.getElementById("classeIP").textContent = classeIP;
-        }
-
-        function calcularEnderecoRede(ip, mascara) {
-            var ipArray = ip.split(".");
-            var mascaraArray = mascara.split(".");
-            var enderecoRedeArray = [];
-
-            for (var i = 0; i < 4; i++) {
-                enderecoRedeArray.push(ipArray[i] & mascaraArray[i]);
-            }
-
-            return enderecoRedeArray.join(".");
-        }
-
-        function calcularEnderecoBroadcast(ip, mascara) {
-            var ipArray = ip.split(".");
-            var mascaraArray = mascara.split(".");
-            var enderecoBroadcastArray = [];
-
-            for (var i = 0; i < 4; i++) {
-                enderecoBroadcastArray.push(ipArray[i] | ~mascaraArray[i]);
-            }
-
-            return enderecoBroadcastArray.join(".");
-        }
-
-        function calcularQuantidadeRede(mascara) {
-            var mascaraArray = mascara.split(".");
-            var qtdRede = 1;
-
-            for (var i = 0; i < 4; i++) {
-                qtdRede *= 256 - parseInt(mascaraArray[i]);
-            }
-
-            return qtdRede;
-        }
-
-        function calcularQuantidadeHost(mascara) {
-            return calcularQuantidadeRede(mascara) - 2;
-        }
-
-        function cidrToMascara(cidr) {
-            var prefix = parseInt(cidr.split("/")[1]);
-            var mascara = [];
-            for (var i = 0; i < 4; i++) {
-                mascara.push((prefix > 8 * i) ? 255 : 256 - Math.pow(2, 8 - (prefix - 8 * i)));
-            }
-            return mascara.join(".");
-        }
-
-        function determinarClasseIP(ip) {
-            var primeiroOcteto = parseInt(ip.split(".")[0]);
-
-            if (primeiroOcteto >= 1 && primeiroOcteto <= 126) {
-                return "Classe A";
-            } else if (primeiroOcteto >= 128 && primeiroOcteto <= 191) {
-                return "Classe B";
-            } else if (primeiroOcteto >= 192 && primeiroOcteto <= 223) {
-                return "Classe C";
-            } else if (primeiroOcteto >= 224 && primeiroOcteto <= 239) {
-                return "Classe D (Multicast)";
-            } else if (primeiroOcteto >= 240 && primeiroOcteto <= 255) {
-                return "Classe E (Reservado)";
-            } else {
-                return "Inválido";
-            }
-        }
-    </script>
+    <script src="calculadora.js"></script>
 </body>
 </html>
